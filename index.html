@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร้านโรตีสุดหล่อ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Mali','Trebuchet MS',sans-serif;background:linear-gradient(160deg,#fff0f7,#ffc7e5);min-height:100vh;color:#7a2a50;padding:16px;display:flex;justify-content:center}
+.app{width:100%;max-width:500px}
+.screen{display:none}
+.screen.active{display:block}
+.card{background:#fff;border:3px solid #ffd0e8;border-radius:26px;padding:22px;box-shadow:0 12px 30px rgba(255,105,175,.25)}
+h1{font-size:24px;text-align:center;color:#e0357f;margin-bottom:14px}
+.cutie{font-size:70px;text-align:center;margin:14px 0;animation:spin 4s linear infinite;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.name{text-align:center;font-weight:700;color:#e0357f;background:#fff;border:2px solid #ffd0e8;border-radius:999px;padding:5px 16px;display:block;width:fit-content;margin:0 auto 8px}
+.ig{text-align:center;font-size:12px;color:#a3597f;background:#ffeaf5;border:2px dashed #ffc9e4;border-radius:999px;padding:5px 14px;margin:0 auto 16px;width:fit-content}
+.ig b{color:#e0357f}
+.btn{display:block;width:100%;font-family:inherit;font-size:17px;font-weight:700;color:#fff;border:none;cursor:pointer;border-radius:999px;padding:15px;margin-top:10px;background:linear-gradient(180deg,#ff9ecb,#ff5fa8);box-shadow:0 5px 0 #e73f8c;transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #e73f8c}
+.btn.green{background:linear-gradient(180deg,#8ef0a2,#35cf6d);box-shadow:0 5px 0 #24a355}
+.btn.green:active{box-shadow:0 2px 0 #24a355}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px}
+.money{font-weight:700;font-size:17px;color:#e0357f;background:#fff0f8;border:3px solid #ffd0e8;border-radius:999px;padding:7px 14px;white-space:nowrap}
+.shopbtn{font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:3px solid #ffd0e8;background:#fff;color:#e0357f;border-radius:999px;padding:7px 16px;box-shadow:0 3px 0 #ffe1f0}
+.shopbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #ffe1f0}
+.status{text-align:center;font-size:16px;font-weight:700;color:#a02a63;min-height:28px;margin:10px 0}
+.customer{font-size:60px;text-align:center;min-height:80px;line-height:80px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.ing{font-family:inherit;cursor:pointer;background:#fff;border:2.5px solid #ffd6ea;border-radius:16px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#7a2a50;font-size:12px;font-weight:700}
+.ing .e{font-size:22px}
+.ing.on{background:linear-gradient(180deg,#ff9ecb,#ff5fa8);color:#fff;border-color:#ff5fa8}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.chip{background:#ffeaf5;border:2px solid #ffc9e4;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;color:#c0397a}
+.priceinput{width:100%;font-family:inherit;font-size:20px;font-weight:700;text-align:center;padding:13px;border-radius:16px;border:3px solid #ffd0e8;background:#fff;color:#e0357f;outline:none;margin:10px 0}
+.hidden{display:none!important}
+.modal{position:fixed;inset:0;background:rgba(120,20,70,.4);display:none;align-items:center;justify-content:center;padding:18px;z-index:99}
+.modal.show{display:flex}
+.modalcard{background:#fff;border:3px solid #ffd0e8;border-radius:24px;padding:20px;max-width:440px;width:100%}
+.modalcard h2{text-align:center;color:#e0357f;margin-bottom:14px;font-size:20px}
+.item{background:#fff8fc;border:2.5px dashed #ffc9e4;border-radius:18px;padding:14px;margin-bottom:12px}
+.item h3{font-size:16px;color:#a02a63;margin-bottom:6px}
+.item .p{font-size:13px;color:#e0357f;font-weight:700;margin-bottom:8px}
+.item .d{font-size:13px;color:#a3597f;background:#fff;border-radius:12px;padding:8px 11px;margin-bottom:10px}
+.timer{position:fixed;left:14px;bottom:14px;background:#fff;border:3px solid #ffd0e8;border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px;color:#e0357f;box-shadow:0 4px 0 #ffe1f0;z-index:50;font-variant-numeric:tabular-nums}
+</style>
+<script>
+var G = { money:0, influencer:false, sold:0, stage:'idle', wait:0, patience:0, timer:null, selected:{} };
+
+var WAIT_N = 15, WAIT_I = 5, CHOOSE_TIME = 300, INF_COST = 10000000;
+
+var INGS = [
+  {id:'masala',   n:'มาซาล่า',      e:'🌶️'},
+  {id:'sharkfin', n:'หูฉลาม',       e:'🦈'},
+  {id:'egg',      n:'ไข่',          e:'🥚'},
+  {id:'tapo',     n:'ตับอี้หวา',     e:'🍢'},
+  {id:'beefbase', n:'เนื้อเบส',      e:'🥩'},
+  {id:'jack',     n:'เครื่องในแจ็ก', e:'🫀'},
+  {id:'plara',    n:'ปลาร้า',        e:'🐟'},
+  {id:'pork',     n:'หมู',          e:'🐷'},
+  {id:'beef',     n:'เนื้อ',         e:'🐮'}
+];
+
+var FACES = ['🧑','👩','🧔','👧','👦','🧓','👩‍🦰','🧑‍🎤','👩‍🍳','🧑‍🚀'];
+
+function $(id){ return document.getElementById(id); }
+function fmt(n){ return Number(n).toLocaleString('en-US'); }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function show(name){
+  var ss = document.querySelectorAll('.screen');
+  for(var i=0; i<ss.length; i++) ss[i].classList.remove('active');
+  var t = $('screen-'+name);
+  if(t) t.classList.add('active');
+}
+function save(){
+  try{ localStorage.setItem('roti_v3', JSON.stringify({m:G.money,i:G.influencer,s:G.sold})); }catch(e){}
+}
+function load(){
+  try{
+    var r = localStorage.getItem('roti_v3');
+    if(r){ var o = JSON.parse(r); G.money=o.m||0; G.influencer=!!o.i; G.sold=o.s||0; }
+  }catch(e){}
+}
+function updateUI(){
+  var a=$('moneyLobby'), b=$('moneySell'), c=$('soldCount');
+  if(a) a.textContent = fmt(G.money);
+  if(b) b.textContent = fmt(G.money);
+  if(c) c.textContent = fmt(G.sold);
+}
+function toast(msg){
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ff5fa8;color:#fff;font-weight:700;padding:11px 20px;border-radius:999px;z-index:999;font-family:Mali,sans-serif;box-shadow:0 8px 20px rgba(255,95,168,.5)';
+  d.textContent = msg;
+  document.body.appendChild(d);
+  setTimeout(function(){ d.remove(); }, 1800);
+}
+function fmtMMSS(s){
+  s = Math.max(0, s|0);
+  var m = Math.floor(s/60), r = s%60;
+  return m + ':' + String(r).padStart(2,'0');
+}
+function countSel(){ var n=0; for(var k in G.selected) if(G.selected[k]) n++; return n; }
+
+function updateTimer(){
+  var t = $('timerBox');
+  if(!t) return;
+  if(G.stage === 'waiting'){
+    t.textContent = '⏳ รอลูกค้าอีก ' + G.wait + ' วิ';
+  } else if(G.stage === 'choosing'){
+    t.textContent = '⏱️ ' + fmtMMSS(G.patience);
+  } else if(G.stage === 'wrapping'){
+    t.textContent = '🌀 กำลังห่อ...';
+  } else if(G.stage === 'pricing'){
+    t.textContent = '💰 ตั้งราคา';
+  } else {
+    t.textContent = '⏱️ —';
+  }
+}
+
+function startTimer(){
+  stopTimer();
+  G.timer = setInterval(tick, 1000);
+  updateTimer();
+}
+function stopTimer(){
+  if(G.timer){ clearInterval(G.timer); G.timer = null; }
+}
+
+// ✅ ลูกค้าไม่มีวันเบื่อ — นับถอยหลังแค่โชว์ ไม่หนี
+function tick(){
+  if(G.stage === 'waiting'){
+    G.wait--;
+    if(G.wait <= 0) arrive();
+  } else if(G.stage === 'choosing'){
+    if(G.patience > 0) G.patience--;
+    // ไม่เรียก leave() อีกแล้ว — ลูกค้าอยู่ตลอด
+  }
+  updateTimer();
+}
+
+function startSell(){
+  show('sell');
+  G.selected = {};
+  G.stage = 'waiting';
+  G.wait = G.influencer ? WAIT_I : WAIT_N;
+  G.patience = 0;
+  var c=$('customer'); if(c){ c.classList.add('hidden'); c.textContent='🧑'; }
+  var ca=$('chooseArea'); if(ca) ca.classList.add('hidden');
+  var wa=$('wrapArea'); if(wa){ wa.classList.add('hidden'); wa.innerHTML=''; }
+  var pa=$('priceArea'); if(pa) pa.classList.add('hidden');
+  var bp=$('btnPut'); if(bp) bp.classList.add('hidden');
+  var st=$('sellStatus'); if(st) st.textContent = G.influencer ? 'รอลูกค้า... (อินฟลูช่วย ✨)' : 'รอลูกค้า... ⏳';
+  startTimer();
+}
+
+function arrive(){
+  G.stage = 'choosing';
+  G.patience = CHOOSE_TIME; // 5:00 แสดงผลเท่านั้น ไม่ทำให้หนี
+  var c=$('customer');
+  if(c){ c.textContent = pick(FACES); c.classList.remove('hidden'); }
+  var st=$('sellStatus'); if(st) st.textContent = 'ลูกค้ามาแล้ว! 🎉 จะใส่อะไรดี?';
+  renderIngs();
+  var ca=$('chooseArea'); if(ca) ca.classList.remove('hidden');
+  var bp=$('btnPut'); if(bp) bp.classList.remove('hidden');
+  updateTimer();
+}
+
+function renderIngs(){
+  var g = $('ingGrid');
+  if(!g) return;
+  g.innerHTML = '';
+  for(var i=0; i<INGS.length; i++){
+    var ing = INGS[i];
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ing' + (G.selected[ing.id] ? ' on' : '');
+    b.innerHTML = '<span class="e">'+ing.e+'</span><span>'+ing.n+'</span>';
+    b.onclick = (function(id, el){
+      return function(){
+        if(G.stage !== 'choosing') return;
+        G.selected[id] = !G.selected[id];
+        el.classList.toggle('on');
+      };
+    })(ing.id, b);
+    g.appendChild(b);
+  }
+}
+
+function putRoti(){
+  if(G.stage !== 'choosing') return;
+  if(countSel() === 0){
+    var st=$('sellStatus'); if(st) st.textContent = 'ใส่สักอย่างก่อนสิ! 😤';
+    return;
+  }
+  G.stage = 'wrapping';
+  stopTimer();
+  updateTimer();
+  var ca=$('chooseArea'); if(ca) ca.classList.add('hidden');
+  var bp=$('btnPut'); if(bp) bp.classList.add('hidden');
+  var st=$('sellStatus'); if(st) st.textContent = 'กำลังห่อโรตี... 🌀';
+
+  var html = '';
+  for(var i=0; i<INGS.length; i++){
+    if(G.selected[INGS[i].id]){
+      html += '<span class="chip">'+INGS[i].e+' '+INGS[i].n+'</span>';
+    }
+  }
+  var wa = $('wrapArea');
+  if(wa){ wa.innerHTML = html; wa.classList.remove('hidden'); }
+
+  setTimeout(function(){
+    if(wa) wa.classList.add('hidden');
+    var st2=$('sellStatus'); if(st2) st2.textContent = 'ยื่นให้ลูกค้าแล้ว! 🤲';
+    showPrice();
+  }, 2000);
+}
+
+function showPrice(){
+  G.stage = 'pricing';
+  updateTimer();
+  var pa=$('priceArea'); if(pa) pa.classList.remove('hidden');
+  var pi=$('priceInput'); if(pi){ pi.value=''; setTimeout(function(){ pi.focus(); }, 80); }
+}
+
+function charge(){
+  if(G.stage !== 'pricing') return;
+  var pi = $('priceInput');
+  var amt = pi ? parseInt(pi.value, 10) : 0;
+  if(isNaN(amt) || amt < 0) amt = 0;
+  amt = Math.floor(amt);
+  G.money += amt;
+  G.sold += 1;
+  save();
+  updateUI();
+  var pa=$('priceArea'); if(pa) pa.classList.add('hidden');
+  G.stage = 'done';
+
+  var items = countSel() || 1;
+  var r;
+  if(amt === 0) r = 'ลูกค้า: ฟรีเหรอ?! 🥹';
+  else if(amt <= items*15) r = 'ลูกค้า: ถูกจัง อร่อย 😋';
+  else if(amt <= items*45) r = 'ลูกค้า: ราคาโอเค 🙂';
+  else r = 'ลูกค้า: แพงไปป่ะ... แต่จ่าย 😭';
+
+  var st=$('sellStatus'); if(st) st.textContent = r + '  +' + fmt(amt) + ' บาท';
+
+  setTimeout(function(){
+    G.stage = 'idle';
+    G.selected = {};
+    show('lobby');
+    updateTimer();
+  }, 2200);
+}
+
+function openShop(){
+  renderShop();
+  var m=$('shopModal'); if(m) m.classList.add('show');
+}
+function closeShop(){
+  var m=$('shopModal'); if(m) m.classList.remove('show');
+}
+function renderShop(){
+  var b = $('btnBuyInflu');
+  if(!b) return;
+  if(G.influencer){ b.textContent = 'จ้างแล้ว ✅'; b.disabled = true; }
+  else { b.textContent = 'จ้างเลย 10,000,000 ฿'; b.disabled = false; }
+}
+function buy(){
+  if(G.influencer){ toast('จ้างไปแล้วน้า~'); return; }
+  if(G.money < INF_COST){ toast('เงินไม่พอจ้า 🥞'); return; }
+  G.money -= INF_COST;
+  G.influencer = true;
+  save();
+  updateUI();
+  renderShop();
+  toast('จ้างอินฟลูสำเร็จ! ลูกค้ามาไวขึ้น ✨');
+}
+
+function init(){
+  load();
+  updateUI();
+  renderShop();
+  var pi = $('priceInput');
+  if(pi) pi.onkeydown = function(e){ if(e.key === 'Enter'){ e.preventDefault(); charge(); } };
+  updateTimer();
+  console.log('Roti ready ✅ (ลูกค้าไม่มีวันเบื่อ)');
+}
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</head>
+
+<body>
+<div class="app">
+
+  <section class="screen active" id="screen-intro">
+    <div class="card">
+      <h1>มึงอยากขายโรตีมั้ย?</h1>
+      <span class="cutie">🧑‍🍳</span>
+      <div class="name">คิวสุดหล่อ 💕</div>
+      <div class="ig">📸 IG: <b>nxtttppd</b> • ทักมานะจ๊ะสาวๆ</div>
+      <button class="btn" onclick="show('lobby')">ขายโรตี 🥞</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-lobby">
+    <div class="card">
+      <div class="top">
+        <div style="font-weight:700;color:#e0357f;font-size:17px">🥞 ร้านโรตีสุดหล่อ</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div class="money">💰 <span id="moneyLobby">0</span></div>
+          <button class="shopbtn" onclick="openShop()">🛍️ ร้านค้า</button>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <span class="cutie">🧑‍🍳</span>
+        <div class="ig">📸 IG: <b>nxtttppd</b> • ทักมานะจ๊ะสาวๆ</div>
+        <button class="btn" onclick="startSell()">เริ่มขาย 🥞</button>
+        <div style="margin-top:12px;font-size:13px;color:#c174a0">ขายแล้ว <span id="soldCount">0</span> จาน</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-sell">
+    <div class="card">
+      <div class="top">
+        <div style="font-weight:700;color:#e0357f;font-size:17px">🥞 ขายโรตี</div>
+        <div class="money">💰 <span id="moneySell">0</span></div>
+      </div>
+      <div class="customer hidden" id="customer">🧑</div>
+      <div class="status" id="sellStatus">รอลูกค้า...</div>
+      <div id="chooseArea" class="hidden"><div class="grid" id="ingGrid"></div></div>
+      <div id="wrapArea" class="chips hidden"></div>
+      <div id="priceArea" class="hidden">
+        <div style="text-align:center;font-weight:700;color:#a02a63;margin-top:8px">จะเอาเงินเท่าไหร่? 💰</div>
+        <input type="number" id="priceInput" class="priceinput" placeholder="ใส่จำนวน..." min="0" inputmode="numeric">
+        <button class="btn" onclick="charge()">เก็บเงิน 💸</button>
+      </div>
+      <button class="btn green hidden" id="btnPut" onclick="putRoti()">ใส่ ✅</button>
+    </div>
+  </section>
+
+</div>
+
+<div class="modal" id="shopModal">
+  <div class="modalcard">
+    <h2>🛍️ ร้านค้า</h2>
+    <div class="item">
+      <h3>📣 จ้างอินฟลูมาอวยร้าน</h3>
+      <div class="p">ราคา 10,000,000 บาท</div>
+      <div class="d">จะทำให้ลูกค้ามาไวขึ้น (ลูกค้ามา 5 วิ อยู่ 5 นาที)</div>
+      <button class="btn" id="btnBuyInflu" onclick="buy()">จ้างเลย</button>
+    </div>
+    <button class="shopbtn" onclick="closeShop()" style="width:100%;padding:11px">ปิด</button>
+  </div>
+</div>
+
+<div class="timer" id="timerBox">⏱️ —</div>
+
+</body>
+</html>
