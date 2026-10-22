@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร้านโรตีสุดหล่อ</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;font-family:Arial,sans-serif;background:#ffe1f0;color:#7a2a50;min-height:100vh}
+.app{max-width:500px;margin:0 auto}
+.card{background:#fff;border:3px solid #ffd0e8;border-radius:24px;padding:20px;box-shadow:0 10px 25px rgba(255,105,175,.25)}
+h1{font-size:22px;text-align:center;color:#e0357f;margin:0 0 12px}
+.cutie{font-size:60px;text-align:center;display:block;margin:10px 0;animation:sp 4s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.pill{text-align:center;font-weight:700;color:#e0357f;background:#fff;border:2px solid #ffd0e8;border-radius:999px;padding:4px 14px;display:table;margin:0 auto 6px;font-size:14px}
+.ig{text-align:center;font-size:12px;color:#a3597f;background:#ffeaf5;border:2px dashed #ffc9e4;border-radius:999px;padding:5px 12px;margin:0 auto 14px;display:table}
+.ig b{color:#e0357f}
+.btn{display:block;width:100%;font-family:inherit;font-size:16px;font-weight:700;color:#fff;border:none;cursor:pointer;border-radius:999px;padding:14px;margin-top:8px;background:#ff5fa8}
+.btn.green{background:#35cf6d}
+.menu-btn{display:block;width:100%;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:3px solid #ffd0e8;background:#fff;color:#e0357f;border-radius:999px;padding:8px 14px;box-shadow:0 3px 0 #ffe1f0;margin-bottom:6px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:14px}
+.money{font-weight:700;font-size:16px;color:#e0357f;background:#fff0f8;border:3px solid #ffd0e8;border-radius:999px;padding:7px 12px;white-space:nowrap}
+.status{text-align:center;font-size:15px;font-weight:700;color:#a02a63;min-height:26px;margin:8px 0}
+.customer{font-size:56px;text-align:center;min-height:70px;line-height:70px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}
+.ing{font-family:inherit;cursor:pointer;background:#fff;border:2px solid #ffd6ea;border-radius:14px;padding:9px 3px;display:flex;flex-direction:column;align-items:center;gap:3px;color:#7a2a50;font-size:11px;font-weight:700}
+.ing.on{background:#ff5fa8;color:#fff;border-color:#ff5fa8}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.chip{background:#ffeaf5;border:2px solid #ffc9e4;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;color:#c0397a}
+.priceinput{width:100%;font-family:inherit;font-size:20px;font-weight:700;text-align:center;padding:12px;border-radius:14px;border:3px solid #ffd0e8;background:#fff;color:#e0357f;outline:none;margin:8px 0}
+.hidden{display:none!important}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(120,20,70,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}
+.modalcard{background:#fff;border:3px solid #ffd0e8;border-radius:22px;padding:18px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto}
+.modalcard h2{text-align:center;color:#e0357f;margin:0 0 12px;font-size:19px}
+.item{background:#fff8fc;border:2px dashed #ffc9e4;border-radius:16px;padding:12px;margin-bottom:10px}
+.item h3{font-size:15px;color:#a02a63;margin:0 0 4px}
+.item .p{font-size:13px;color:#e0357f;font-weight:700;margin-bottom:6px}
+.item .d{font-size:12px;color:#a3597f;background:#fff;border-radius:12px;padding:8px 10px;margin-bottom:8px;line-height:1.4}
+.timer{position:fixed;left:12px;bottom:12px;background:#fff;border:3px solid #ffd0e8;border-radius:999px;padding:6px 12px;font-weight:700;font-size:12px;color:#e0357f;box-shadow:0 3px 0 #ffe1f0;z-index:50}
+.wallet{display:flex;justify-content:space-between;background:#fff0f8;border:2px solid #ffd0e8;border-radius:14px;padding:8px 12px;margin-bottom:8px;font-weight:700;font-size:13px;color:#a02a63}
+.wallet b{color:#e0357f;font-size:16px}
+.note{text-align:center;font-size:11px;color:#c0397a;background:#fff5fa;border:2px dashed #ffc9e4;border-radius:10px;padding:6px 8px;margin-bottom:10px}
+.total{text-align:center;font-size:13px;color:#a3597f;background:#fff0f8;border:2px solid #ffd0e8;border-radius:999px;padding:5px 12px;margin-bottom:10px}
+.total b{color:#e0357f;font-size:15px}
+.person{background:#fff8fc;border:2px dashed #ffc9e4;border-radius:16px;padding:10px;margin-bottom:8px}
+.person-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.person-e{font-size:30px}
+.person-n{font-weight:700;color:#a02a63;font-size:15px}
+.person-d{font-size:11px;color:#a3597f;margin-top:1px}
+.gave{font-size:11px;color:#e0357f;font-weight:700;margin-bottom:5px}
+.row{display:flex;gap:5px;flex-wrap:wrap}
+.dinp{flex:1;min-width:100px;font-family:inherit;font-size:14px;font-weight:700;text-align:center;padding:8px;border-radius:12px;border:2px solid #ffd0e8;background:#fff;color:#e0357f;outline:none}
+.dbtn{font-family:inherit;font-weight:700;font-size:13px;color:#fff;border:none;cursor:pointer;border-radius:12px;padding:9px 12px;background:#ff5fa8}
+.dbtn.alt{background:#ff9ecb;color:#7a2a50;font-size:12px}
+.th-hero{text-align:center;margin-bottom:10px}
+.th-emoji{font-size:56px;display:inline-block;animation:sw 3s ease-in-out infinite}
+@keyframes sw{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.th-name{font-weight:700;color:#c0397a;font-size:16px;margin-top:2px}
+.th-sub{font-size:11px;color:#a3597f}
+.th-desc{font-size:12px;color:#7a2a50;line-height:1.5;text-align:center;background:#fff5fa;border:2px dashed #ffc9e4;border-radius:12px;padding:9px 10px;margin-bottom:10px}
+.th-stat{font-size:12px;color:#a3597f;background:#fff0f8;border:2px solid #ffd0e8;border-radius:10px;padding:7px 10px;margin-bottom:8px;text-align:center;line-height:1.6}
+.th-stat b{color:#e0357f;font-size:14px}
+.th-combo{text-align:center;font-size:11px;color:#c0397a;font-weight:700;background:#fff;border:2px solid #ffd0e8;border-radius:8px;padding:5px 8px;margin-bottom:10px}
+.th-done{text-align:center;font-size:13px;color:#24a355;font-weight:700;background:#eaffef;border:2px solid #8ef0a2;border-radius:12px;padding:9px;margin-bottom:8px}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#ff5fa8;color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;z-index:99999;box-shadow:0 6px 16px rgba(255,95,168,.5);max-width:88vw;text-align:center;line-height:1.4;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="card" id="screen-intro" style="display:block">
+    <h1>มึงอยากขายโรตีมั้ย?</h1>
+    <span class="cutie">🧑‍🍳</span>
+    <div class="pill">คิวสุดหล่อ 💕</div>
+    <div class="ig">📸 IG: <b>nxtttppd</b> • ทักมานะจ๊ะสาวๆ</div>
+    <button type="button" class="btn" onclick="showScreen('lobby')">ขายโรตี 🥞</button>
+  </div>
+
+  <div class="card" id="screen-lobby" style="display:none">
+    <div class="top">
+      <div style="font-weight:700;color:#e0357f;font-size:16px">🥞 ร้านโรตีสุดหล่อ</div>
+      <div style="display:flex;flex-direction:column;align-items:stretch;gap:5px;min-width:140px">
+        <div class="money" style="text-align:center">💰 <span id="moneyLobby">0</span></div>
+        <button type="button" class="menu-btn" onclick="openShop()">🛍️ ร้านค้า</button>
+        <button type="button" class="menu-btn" onclick="openMerit()">🙏 ทำบุญทำทาน</button>
+        <button type="button" class="menu-btn" onclick="openTemple()" style="margin-bottom:0">🏛️ วัด</button>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <span class="cutie">🧑‍🍳</span>
+      <div class="ig">📸 IG: <b>nxtttppd</b> • ทักมานะจ๊ะสาวๆ</div>
+      <button type="button" class="btn" onclick="startSell()">เริ่มขาย 🥞</button>
+      <div style="margin-top:10px;font-size:12px;color:#c174a0">ขายแล้ว <span id="soldCount">0</span> จาน</div>
+      <div style="margin-top:3px;font-size:12px;color:#c174a0">🙏 บุญสะสม <span id="meritLobby">0</span> บาท</div>
+    </div>
+  </div>
+
+  <div class="card" id="screen-sell" style="display:none">
+    <div class="top" style="margin-bottom:6px">
+      <div style="font-weight:700;color:#e0357f;font-size:16px">🥞 ขายโรตี</div>
+      <div class="money">💰 <span id="moneySell">0</span></div>
+    </div>
+    <div class="customer hidden" id="customer">🧑</div>
+    <div class="status" id="sellStatus">รอลูกค้า...</div>
+    <div id="chooseArea" class="hidden"><div class="grid" id="ingGrid"></div></div>
+    <div id="wrapArea" class="chips hidden"></div>
+    <div id="priceArea" class="hidden">
+      <div style="text-align:center;font-weight:700;color:#a02a63;margin-top:6px;font-size:15px">จะเอาเงินเท่าไหร่? 💰</div>
+      <input type="number" id="priceInput" class="priceinput" placeholder="ใส่จำนวน..." min="0">
+      <button type="button" class="btn" onclick="charge()">เก็บเงิน 💸</button>
+    </div>
+    <button type="button" class="btn green hidden" id="btnPut" onclick="putRoti()">ใส่ ✅</button>
+  </div>
+
+</div>
+
+<div class="modal" id="shopModal">
+  <div class="modalcard">
+    <h2>🛍️ ร้านค้า</h2>
+    <div class="item">
+      <h3>📣 จ้างอินฟลูมาอวยร้าน</h3>
+      <div class="p">ราคา 10,000,000 บาท</div>
+      <div class="d">ลูกค้ามาไวขึ้น (5 วิ อยู่ 5 นาที)<br>• ใช้ร่วมกับ "วัด" ได้</div>
+      <button type="button" class="btn" id="btnBuyInflu" onclick="buy()">จ้างเลย</button>
+    </div>
+    <button type="button" class="menu-btn" onclick="closeShop()" style="width:100%;padding:10px;margin-bottom:0">ปิด</button>
+  </div>
+</div>
+
+<div class="modal" id="meritModal">
+  <div class="modalcard">
+    <h2>🙏 ทำบุญทำทาน</h2>
+    <div class="wallet"><span>💰 เงินในกระเป๋า</span><b><span id="meritWallet">0</span> บาท</b></div>
+    <div class="note">ใส่จำนวนเงินได้ตามใจ — หักจากเงินจริง 100%</div>
+    <div class="total">🙏 บุญสะสม: <b><span id="meritTotal">0</span></b> บาท</div>
+    <div id="meritList"></div>
+    <button type="button" class="menu-btn" onclick="closeMerit()" style="width:100%;padding:10px;margin-bottom:0">ปิด</button>
+  </div>
+</div>
+
+<div class="modal" id="templeModal">
+  <div class="modalcard">
+    <h2>🏛️ วัด</h2>
+    <div class="th-hero">
+      <div class="th-emoji">🧘</div>
+      <div class="th-name">หลวงพ่อโชติ</div>
+      <div class="th-sub">วัดกลางใจชาวโรตี</div>
+    </div>
+    <div class="th-desc">ขอขมาหลวงพ่อโชติ → <b>ลูกค้าไหลมาเทมา</b><br>ลดเวลารอลูกค้า <b>2 วิ ตลอดไป</b><br><b>ฟรี! • สะสมได้ครั้งเดียว</b></div>
+    <div class="th-stat">เวลารอลูกค้าปัจจุบัน: <b><span id="thNow">15</span> วิ</b><br><span style="font-size:11px">base <span id="thBase">15</span> วิ • หลวงพ่อลด <span id="thReduce">0</span> วิ • อินฟลู: <span id="thInf">ยังไม่จ้าง</span></span></div>
+    <div class="th-combo">✨ ใช้ร่วมกับ "จ้างอินฟลู" ได้</div>
+    <div id="thDone" class="th-done hidden">✅ ขอขมาหลวงพ่อโชติแล้ว (ครั้งเดียว)</div>
+    <button type="button" class="btn" id="btnPray" onclick="pray()">🙏 ขอขมาหลวงพ่อโชติ (ฟรี)</button>
+    <button type="button" class="menu-btn" onclick="closeTemple()" style="width:100%;padding:10px;margin-top:8px;margin-bottom:0">ปิด</button>
+  </div>
+</div>
+
+<div class="timer" id="timerBox">⏱️ —</div>
+
+<script>
+var G={money:0,influencer:false,sold:0,merit:0,donations:{},pray:0,stage:'idle',wait:0,patience:0,timer:null,selected:{}};
+var WAIT_N=15,WAIT_I=5,CHOOSE_TIME=300,INF_COST=10000000,PRAY_REDUCE=2;
+var INGS=[{id:'masala',n:'มาซาล่า',e:'🌶️'},{id:'sharkfin',n:'หูฉลาม',e:'🦈'},{id:'egg',n:'ไข่',e:'🥚'},{id:'tapo',n:'ตับอี้หวา',e:'🍢'},{id:'beefbase',n:'เนื้อเบส',e:'🥩'},{id:'jack',n:'เครื่องในแจ็ก',e:'🫀'},{id:'plara',n:'ปลาร้า',e:'🐟'},{id:'pork',n:'หมู',e:'🐷'},{id:'beef',n:'เนื้อ',e:'🐮'}];
+var FACES=['🧑','👩','🧔','👧','👦','🧓','👩‍🦰','🧑‍🎤','👩‍🍳','🧑‍🚀'];
+var PEOPLE=[{id:'kit',name:'กิต',emoji:'🧑‍💼',desc:'เปิดร้านใหม่ ขาดทุนอยู่ 🏪'},{id:'base',name:'เบส',emoji:'🎸',desc:'อยากซื้อกีตาร์ใหม่ 🎵'},{id:'iwa',name:'อี้หวา',emoji:'💸',desc:'เอาเงินไปเปิด OnlyFans 🔞'},{id:'jack',name:'แจ็ก',emoji:'🎮',desc:'อยากซื้อเกมใหม่ 🕹️'},{id:'naris',name:'นริศษา',emoji:'👩‍🎓',desc:'ค่าหนังสือเรียนเทอมนี้ 📚'}];
+
+function $(id){return document.getElementById(id);}
+function fmt(n){return Number(n).toLocaleString('en-US');}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+function toast(msg){
+  try{
+    var d=document.createElement('div');
+    d.className='toast';
+    d.innerHTML=String(msg).replace(/\n/g,'<br>');
+    document.body.appendChild(d);
+    setTimeout(function(){d.remove();},2200);
+  }catch(e){console.error(e);}
+}
+
+function showScreen(name){
+  var ids=['intro','lobby','sell'];
+  for(var i=0;i<ids.length;i++){
+    var el=$('screen-'+ids[i]);
+    if(el) el.style.display=(ids[i]===name?'block':'none');
+  }
+}
+
+function save(){
+  try{localStorage.setItem('roti_final',JSON.stringify({m:G.money,i:G.influencer,s:G.sold,merit:G.merit,don:G.donations,pray:G.pray}));}catch(e){}
+}
+function load(){
+  try{
+    var r=localStorage.getItem('roti_final');
+    if(r){var o=JSON.parse(r);G.money=o.m||0;G.influencer=!!o.i;G.sold=o.s||0;G.merit=o.merit||0;G.donations=o.don||{};G.pray=o.pray||0;}
+  }catch(e){}
+}
+
+function updateUI(){
+  var a=$('moneyLobby'),b=$('moneySell'),c=$('soldCount'),d=$('meritLobby');
+  if(a)a.textContent=fmt(G.money);
+  if(b)b.textContent=fmt(G.money);
+  if(c)c.textContent=fmt(G.sold);
+  if(d)d.textContent=fmt(G.merit);
+  var w=$('meritWallet');if(w)w.textContent=fmt(G.money);
+  var wt=$('meritTotal');if(wt)wt.textContent=fmt(G.merit);
+}
+
+function fmtT(s){s=Math.max(0,s|0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function cnt(){var n=0;for(var k in G.selected)if(G.selected[k])n++;return n;}
+function getWait(){var base=G.influencer?WAIT_I:WAIT_N;return Math.max(1,base-(G.pray>=1?PRAY_REDUCE:0));}
+
+function updTimer(){
+  var t=$('timerBox');if(!t)return;
+  if(G.stage==='waiting')t.textContent='⏳ รอลูกค้าอีก '+G.wait+' วิ';
+  else if(G.stage==='choosing')t.textContent='⏱️ '+fmtT(G.patience);
+  else if(G.stage==='wrapping')t.textContent='🌀 กำลังห่อ...';
+  else if(G.stage==='pricing')t.textContent='💰 ตั้งราคา';
+  else t.textContent='⏱️ —';
+}
+function startT(){stopT();G.timer=setInterval(tick,1000);updTimer();}
+function stopT(){if(G.timer){clearInterval(G.timer);G.timer=null;}}
+function tick(){
+  if(G.stage==='waiting'){G.wait--;if(G.wait<=0)arrive();}
+  else if(G.stage==='choosing'){if(G.patience>0)G.patience--;}
+  updTimer();
+}
+
+function startSell(){
+  showScreen('sell');
+  G.selected={};G.stage='waiting';G.wait=getWait();G.patience=0;
+  var c=$('customer');if(c){c.classList.add('hidden');c.textContent='🧑';}
+  var ca=$('chooseArea');if(ca)ca.classList.add('hidden');
+  var wa=$('wrapArea');if(wa){wa.classList.add('hidden');wa.innerHTML='';}
+  var pa=$('priceArea');if(pa)pa.classList.add('hidden');
+  var bp=$('btnPut');if(bp)bp.classList.add('hidden');
+  var st=$('sellStatus');
+  if(st){
+    var m='รอลูกค้า... ⏳';
+    if(G.influencer&&G.pray>=1)m='รอลูกค้า... (อินฟลู + หลวงพ่อ 🙏✨)';
+    else if(G.influencer)m='รอลูกค้า... (อินฟลู ✨)';
+    else if(G.pray>=1)m='รอลูกค้า... (หลวงพ่อโชติ 🙏)';
+    st.textContent=m;
+  }
+  startT();
+}
+
+function arrive(){
+  G.stage='choosing';G.patience=CHOOSE_TIME;
+  var c=$('customer');if(c){c.textContent=pick(FACES);c.classList.remove('hidden');}
+  var st=$('sellStatus');if(st)st.textContent='ลูกค้ามาแล้ว! 🎉 จะใส่อะไรดี?';
+  renderIngs();
+  var ca=$('chooseArea');if(ca)ca.classList.remove('hidden');
+  var bp=$('btnPut');if(bp)bp.classList.remove('hidden');
+  updTimer();
+}
+
+function renderIngs(){
+  var g=$('ingGrid');if(!g)return;g.innerHTML='';
+  for(var i=0;i<INGS.length;i++){
+    (function(ing){
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='ing'+(G.selected[ing.id]?' on':'');
+      b.innerHTML='<span style="font-size:20px">'+ing.e+'</span><span>'+ing.n+'</span>';
+      b.onclick=function(){
+        if(G.stage!=='choosing')return;
+        G.selected[ing.id]=!G.selected[ing.id];
+        b.classList.toggle('on');
+      };
+      g.appendChild(b);
+    })(INGS[i]);
+  }
+}
+
+function putRoti(){
+  if(G.stage!=='choosing')return;
+  if(cnt()===0){var st=$('sellStatus');if(st)st.textContent='ใส่สักอย่างก่อนสิ! 😤';return;}
+  G.stage='wrapping';stopT();updTimer();
+  var ca=$('chooseArea');if(ca)ca.classList.add('hidden');
+  var bp=$('btnPut');if(bp)bp.classList.add('hidden');
+  var st=$('sellStatus');if(st)st.textContent='กำลังห่อโรตี... 🌀';
+  var html='';
+  for(var i=0;i<INGS.length;i++)if(G.selected[INGS[i].id])html+='<span class="chip">'+INGS[i].e+' '+INGS[i].n+'</span>';
+  var wa=$('wrapArea');if(wa){wa.innerHTML=html;wa.classList.remove('hidden');}
+  setTimeout(function(){
+    if(wa)wa.classList.add('hidden');
+    var s2=$('sellStatus');if(s2)s2.textContent='ยื่นให้ลูกค้าแล้ว! 🤲';
+    G.stage='pricing';updTimer();
+    var pa=$('priceArea');if(pa)pa.classList.remove('hidden');
+    var pi=$('priceInput');if(pi){pi.value='';setTimeout(function(){pi.focus();},80);}
+  },2000);
+}
+
+function charge(){
+  if(G.stage!=='pricing')return;
+  var pi=$('priceInput');
+  var amt=pi?parseInt(pi.value,10):0;
+  if(isNaN(amt)||amt<0)amt=0;amt=Math.floor(amt);
+  G.money+=amt;G.sold+=1;save();updateUI();
+  var pa=$('priceArea');if(pa)pa.classList.add('hidden');
+  G.stage='done';
+  var items=cnt()||1;var r;
+  if(amt===0)r='ลูกค้า: ฟรีเหรอ?! 🥹';
+  else if(amt<=items*15)r='ลูกค้า: ถูกจัง อร่อย 😋';
+  else if(amt<=items*45)r='ลูกค้า: ราคาโอเค 🙂';
+  else r='ลูกค้า: แพงไปป่ะ... แต่จ่าย 😭';
+  var st=$('sellStatus');if(st)st.textContent=r+'  +'+fmt(amt)+' บาท';
+  setTimeout(function(){G.stage='idle';G.selected={};showScreen('lobby');updTimer();},2200);
+}
+
+function openModal(id){var m=$(id);if(m)m.style.display='flex';}
+function closeModal(id){var m=$(id);if(m)m.style.display='none';}
+
+function openShop(){
+  var b=$('btnBuyInflu');
+  if(b){
+    if(G.influencer){b.textContent='จ้างแล้ว ✅';b.disabled=true;}
+    else{b.textContent='จ้างเลย 10,000,000 ฿';b.disabled=false;}
+  }
+  openModal('shopModal');
+}
+function closeShop(){closeModal('shopModal');}
+function buy(){
+  if(G.influencer){toast('จ้างไปแล้วน้า~');return;}
+  if(G.money<INF_COST){toast('เงินไม่พอจ้า 🥞');return;}
+  G.money-=INF_COST;G.influencer=true;save();updateUI();
+  var b=$('btnBuyInflu');
+  if(b){b.textContent='จ้างแล้ว ✅';b.disabled=true;}
+  toast('จ้างอินฟลูสำเร็จ! ลูกค้ามาไวขึ้น ✨');
+}
+
+function openMerit(){renderMerit();openModal('meritModal');}
+function closeMerit(){closeModal('meritModal');}
+function renderMerit(){
+  var w=$('meritWallet');if(w)w.textContent=fmt(G.money);
+  var wt=$('meritTotal');if(wt)wt.textContent=fmt(G.merit);
+  var list=$('meritList');if(!list)return;
+  list.innerHTML='';
+  for(var i=0;i<PEOPLE.length;i++){
+    (function(p){
+      var gave=(G.donations&&G.donations[p.id])||0;
+      var div=document.createElement('div');div.className='person';
+      var h='<div class="person-h"><div class="person-e">'+p.emoji+'</div>'+
+            '<div><div class="person-n">'+p.name+'</div>'+
+            '<div class="person-d">'+p.desc+'</div></div></div>';
+      if(gave>0)h+='<div class="gave">🙏 เคยทำบุญ '+fmt(gave)+' บาท</div>';
+      h+='<div class="row">'+
+         '<input type="number" class="dinp" id="d_'+p.id+'" placeholder="จำนวนเงิน..." min="1">'+
+         '<button type="button" class="dbtn" onclick="donate(\''+p.id+'\')">🙏 ทำบุญ</button>'+
+         '<button type="button" class="dbtn alt" onclick="fillAll(\''+p.id+'\')">💰 ทั้งหมด</button>'+
+         '</div>';
+      div.innerHTML=h;
+      list.appendChild(div);
+    })(PEOPLE[i]);
+  }
+}
+function fillAll(pid){
+  if(G.money<=0){toast('ไม่มีเงินแล้วจ้า 💸');return;}
+  var inp=$('d_'+pid);if(inp)inp.value=G.money;
+}
+function donate(pid){
+  var p=null;
+  for(var i=0;i<PEOPLE.length;i++)if(PEOPLE[i].id===pid){p=PEOPLE[i];break;}
+  if(!p)return;
+  var inp=$('d_'+pid);
+  var amt=inp?parseInt(inp.value,10):0;
+  if(isNaN(amt)||amt<=0){toast('ใส่จำนวนเงินก่อนจ้า 🙏');return;}
+  if(G.money<amt){toast('เงินไม่พอจ้า (มี '+fmt(G.money)+') 💸');return;}
+  G.money-=amt;G.merit+=amt;
+  if(!G.donations)G.donations={};
+  G.donations[pid]=(G.donations[pid]||0)+a
